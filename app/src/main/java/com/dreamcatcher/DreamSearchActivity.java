@@ -1,4 +1,6 @@
 package com.dreamcatcher;
 
-public class DreamSearchActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DreamSearchActivity extends AppCompatActivity {
 }
