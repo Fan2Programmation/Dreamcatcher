@@ -37,4 +37,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    // we import okhttp to discuss with our http server that discuss himself with of
+    // psql database (we can't discuss directly with our psql database with android)
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 }
