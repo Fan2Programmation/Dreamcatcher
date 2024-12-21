@@ -3,4 +3,7 @@
     <string name="enter_your_dream_here">Enter your dream here</string>
     <string name="dictate_dream">Dictate your dream</string>
     <string name="submit_dream">Submit your dream</string>
+    <string name="dream_content">Dream Content</string>
+    <string name="author">Author</string>
+    <string name="date">Date</string>
 </resources>
