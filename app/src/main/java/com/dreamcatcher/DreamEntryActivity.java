@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +17,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DreamEntryActivity extends AppCompatActivity {
 
@@ -26,6 +39,10 @@ public class DreamEntryActivity extends AppCompatActivity {
 
     private EditText dreamInputField;
     private Button dictateButton;
+    private Button submitButton;
+
+    private final OkHttpClient httpClient = new OkHttpClient();
+    private static final String CREATE_DREAM_URL = "http://your-api-url/dreams/create";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +51,7 @@ public class DreamEntryActivity extends AppCompatActivity {
 
         dreamInputField = findViewById(R.id.dream_input);
         dictateButton = findViewById(R.id.dictate_button);
+        submitButton = findViewById(R.id.submit_button);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkRecordAudioPermission();
@@ -43,6 +61,13 @@ public class DreamEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 launchSpeechToText();
+            }
+        });
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitDream();
             }
         });
     }
@@ -89,5 +114,44 @@ public class DreamEntryActivity extends AppCompatActivity {
                 dreamInputField.setText(spokenText);
             }
         }
+    }
+
+    private void submitDream() {
+        String dreamContent = dreamInputField.getText().toString().trim();
+
+        if (dreamContent.isEmpty()) {
+            Toast.makeText(this, "Please enter your dream before submitting.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JSONObject dreamPayload = new JSONObject();
+        try {
+            dreamPayload.put("content", dreamContent);
+        } catch (JSONException e) {
+            Log.e("DreamEntryActivity", "JSON Exception: " + e.getMessage());
+            return;
+        }
+
+        RequestBody body = RequestBody.create(dreamPayload.toString(), MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(CREATE_DREAM_URL)
+                .post(body)
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(DreamEntryActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> Toast.makeText(DreamEntryActivity.this, "Dream submitted successfully!", Toast.LENGTH_SHORT).show());
+                } else {
+                    runOnUiThread(() -> Toast.makeText(DreamEntryActivity.this, "Failed to submit dream. Please try again.", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
     }
 }

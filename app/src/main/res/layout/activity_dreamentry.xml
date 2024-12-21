@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <!-- Input field for the dream -->
     <EditText
         android:id="@+id/dream_input"
         android:layout_width="match_parent"
@@ -15,6 +16,7 @@
         android:scrollbars="vertical"
         android:layout_marginBottom="16dp"/>
 
+    <!-- Button to trigger Speech-to-Text -->
     <Button
         android:id="@+id/dictate_button"
         android:layout_width="wrap_content"
@@ -22,5 +24,15 @@
         android:text="@string/dictate_dream"
         android:layout_below="@id/dream_input"
         android:layout_alignParentEnd="true"/>
+
+    <!-- Button to submit the dream -->
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_dream"
+        android:layout_below="@id/dictate_button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"/>
 
 </RelativeLayout>
