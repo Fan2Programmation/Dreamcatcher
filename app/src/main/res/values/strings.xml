@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Dreamcatcher</string>
+    <string name="enter_your_dream_here">Enter your dream here</string>
+    <string name="dictate_dream">Dictate Dream</string>
 </resources>
